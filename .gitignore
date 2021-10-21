@@ -27,4 +27,4 @@ discbot-*.tar
 
 .env
 
-config\config.exs
+config.exs
