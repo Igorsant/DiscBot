@@ -9,17 +9,11 @@ defmodule Discbot.Consumer do
 
     def handle_event({:MESSAGE_CREATE, msg, _ws_state}) do
         cond do
-            msg.content == "!ping" -> Api.create_message(msg.channel_id, "pong")
-            msg.content == "!pong" -> Api.create_message(msg.channel_id, "ping")
-            msg.content == "!react" -> Api.create_reaction!(msg.channel_id, msg.id, "😏")
-            String.starts_with?(msg.content, "!react with ") -> Api.create_reaction!(msg.channel_id, msg.id, Enum.at(String.split(msg.content, " "), 2))
-            
-            msg.content == "!ppt" -> Api.create_message(msg.channel_id, "Comando inválido. Use !ppt **pedra** | **papel** | **tesoura**")
-            String.starts_with?(msg.content, "!ppt ") -> evaluate_ppt(msg)
-
             msg.content == "!forza" -> evaluate_forza(msg)
             msg.content == "!funfact" -> evaluate_funfact(msg)
             msg.content == "!norris" -> evaluate_chuck_norris(msg)
+            msg.content == "!checkGamePrice" -> Api.create_message(msg.channel_id, "Comando inválido. Insira um espaço após o comando e o nome de um jogo.")
+            String.starts_with?(msg.content, "!checkGamePrice ") -> evaluate_game_price(msg)
             true -> :ok
         end
     end
@@ -28,49 +22,9 @@ defmodule Discbot.Consumer do
         :ok
     end
 
-    defp evaluate_ppt(msg) do
-        aux = String.split(msg.content)
-
-        if Enum.count(aux) == 2 do
-            case Enum.fetch!(aux, 1) do
-                "pedra" -> evaluate_stone(msg)
-                "papel" -> evaluate_paper(msg)
-                "tesoura" -> evaluate_scisor(msg)
-                _ -> Api.create_message(msg.channel_id, "Comando inválido. Use !ppt **pedra** | **papel** | **tesoura**")
-            end
-        else
-            Api.create_message(msg.channel_id, "Comando inválido. Use !ppt **pedra** | **papel** | **tesoura**")
-        end
-    end
-
-    defp evaluate_stone(msg) do
-        bot_element = Enum.random(0..2)
-
-        case bot_element do
-            0 -> Api.create_message(msg.channel_id, "O bot escolheu pedra. Houve um empate!")
-            1 -> Api.create_message(msg.channel_id, "O bot escolheu papel. O bot venceu!")
-            2 -> Api.create_message(msg.channel_id, "O bot escolheu tesoura. Você venceu!")
-        end
-    end
-
-    defp evaluate_paper(msg) do
-        bot_element = Enum.random(0..2)
-
-        case bot_element do
-            0 -> Api.create_message(msg.channel_id, "O bot escolheu pedra. Você venceu!")
-            1 -> Api.create_message(msg.channel_id, "O bot escolheu papel. Houve um empate!")
-            2 -> Api.create_message(msg.channel_id, "O bot escolheu tesoura. O bot venceu!")
-        end
-    end
-
-    defp evaluate_scisor(msg) do
-        bot_element = Enum.random(0..2)
-
-        case bot_element do
-            0 -> Api.create_message(msg.channel_id, "O bot escolheu pedra. O bot venceu!")
-            1 -> Api.create_message(msg.channel_id, "O bot escolheu papel. Você venceu!")
-            2 -> Api.create_message(msg.channel_id, "O bot escolheu tesoura. Houve um empate!")
-        end
+    defp get_api_response(url) do
+        response = HTTPoison.get! url
+        JSON.decode!(response.body)
     end
 
     defp evaluate_forza(msg) do
@@ -91,8 +45,35 @@ defmodule Discbot.Consumer do
         Api.create_message(msg.channel_id, speak)
     end
 
-    defp get_api_response(url) do
-        response = HTTPoison.get! url
-        JSON.decode!(response.body)
+    defp evaluate_game_price(msg) do
+        aux = String.split(msg.content)
+        game = Enum.join(Enum.filter(aux, fn i -> i != "!checkGamePrice" end), "%20")
+        data = get_api_response("https://www.cheapshark.com/api/1.0/games?title=#{game}")
+        data = Enum.filter(data, fn i ->
+                    cond do
+                        String.contains?(i["external"], game) -> i
+                        true -> :ok
+                    end
+                end)
+        data = Enum.map(data, fn i ->
+                    "\n  Nome: #{i["external"]} | Menor preço: $#{i["cheapest"]} \n #{i["thumb"]}"
+                end)
+
+        #IO.inspect(data)
+
+        data = if Enum.count(data) > 5 do
+                    Enum.chunk_every(data, 5, 2, :discard)
+                else
+                    if Enum.count(data) > 0 do
+                        Enum.chunk_every(data, Enum.count(data), 2, :discard)
+                    end
+                end
+
+        if data != nil do
+            data = Enum.fetch!(data, 0)
+            Enum.each(data, fn i -> Api.create_message(msg.channel_id, i) end)
+        else
+            Api.create_message(msg.channel_id, "Nenhum jogo foi encontrado.")
+        end
     end
 end
