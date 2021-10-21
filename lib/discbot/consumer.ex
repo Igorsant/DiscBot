@@ -16,6 +16,7 @@ defmodule Discbot.Consumer do
             msg.content == "!ppt" -> Api.create_message(msg.channel_id, "Comando inválido. Use !ppt **pedra** | **papel** | **tesoura**")
             String.starts_with?(msg.content, "!ppt ") -> evaluate_ppt(msg)
             msg.content == "!forza" -> evaluate_forza(msg)
+            msg.content == "!funfact" -> evaluate_funfact(msg)
             true -> :ok
         end
     end
@@ -26,7 +27,6 @@ defmodule Discbot.Consumer do
 
     defp evaluate_ppt(msg) do
         aux = String.split(msg.content)
-        HTTPoison.get()
 
         if Enum.count(aux) == 2 do
             Api.create_message(msg.channel_id, "OK")
@@ -40,6 +40,11 @@ defmodule Discbot.Consumer do
         imagem = getApiResponse("https://forza-api.tk")["image"]
 
         Api.create_message(msg.channel_id, imagem)
+    end
+
+    defp evaluate_funfact(msg) do
+        fact = getApiResponse("https://asli-fun-fact-api.herokuapp.com/")["data"]["fact"]
+        Api.create_message(msg.channel_id, fact)
     end
 
     defp getApiResponse(url) do
