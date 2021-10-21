@@ -9,14 +9,9 @@ defmodule Discbot.Consumer do
 
     def handle_event({:MESSAGE_CREATE, msg, _ws_state}) do
         cond do
-            msg.content == "!ping" -> Api.create_message(msg.channel_id, "pong")
-            msg.content == "!pong" -> Api.create_message(msg.channel_id, "ping")
-            msg.content == "!react" -> Api.create_reaction!(msg.channel_id, msg.id, "😏")
-            String.starts_with?(msg.content, "!react with ") -> Api.create_reaction!(msg.channel_id, msg.id, Enum.at(String.split(msg.content, " "), 2))
-            msg.content == "!ppt" -> Api.create_message(msg.channel_id, "Comando inválido. Use !ppt **pedra** | **papel** | **tesoura**")
-            String.starts_with?(msg.content, "!ppt ") -> evaluate_ppt(msg)
             msg.content == "!forza" -> evaluate_forza(msg)
             msg.content == "!funfact" -> evaluate_funfact(msg)
+            msg.content == "!norris" -> evaluate_chuck_norris(msg)
             true -> :ok
         end
     end
@@ -25,29 +20,25 @@ defmodule Discbot.Consumer do
         :ok
     end
 
-    defp evaluate_ppt(msg) do
-        aux = String.split(msg.content)
-
-        if Enum.count(aux) == 2 do
-            Api.create_message(msg.channel_id, "OK")
-        else
-            Api.create_message(msg.channel_id, "Comando inválido. Use !ppt **pedra** | **papel** | **tesoura**")
-        end
-
-    end
-
     defp evaluate_forza(msg) do
-        imagem = getApiResponse("https://forza-api.tk")["image"]
+        imagem = get_api_response("https://forza-api.tk")["image"]
 
         Api.create_message(msg.channel_id, imagem)
     end
 
     defp evaluate_funfact(msg) do
-        fact = getApiResponse("https://asli-fun-fact-api.herokuapp.com/")["data"]["fact"]
+        fact = get_api_response("https://asli-fun-fact-api.herokuapp.com/")["data"]["fact"]
         Api.create_message(msg.channel_id, fact)
     end
 
-    defp getApiResponse(url) do
+    defp evaluate_chuck_norris(msg) do
+        rand = Enum.random(0..619)
+        value = get_api_response("https://api.icndb.com/jokes")["value"]
+        speak = Enum.fetch!(value, rand)["joke"]
+        Api.create_message(msg.channel_id, speak)
+    end
+
+    defp get_api_response(url) do
         response = HTTPoison.get! url
         JSON.decode!(response.body)
     end
