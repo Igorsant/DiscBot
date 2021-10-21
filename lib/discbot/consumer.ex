@@ -1,5 +1,6 @@
 defmodule Discbot.Consumer do
     use Nostrum.Consumer
+    use HTTPoison.Base
     alias Nostrum.Api
 
     def start_link do
@@ -14,6 +15,7 @@ defmodule Discbot.Consumer do
             String.starts_with?(msg.content, "!react with ") -> Api.create_reaction!(msg.channel_id, msg.id, Enum.at(String.split(msg.content, " "), 2))
             msg.content == "!ppt" -> Api.create_message(msg.channel_id, "Comando inválido. Use !ppt **pedra** | **papel** | **tesoura**")
             String.starts_with?(msg.content, "!ppt ") -> evaluate_ppt(msg)
+            msg.content == "!forza" -> evaluate_forza(msg)
             true -> :ok
         end
     end
@@ -24,6 +26,7 @@ defmodule Discbot.Consumer do
 
     defp evaluate_ppt(msg) do
         aux = String.split(msg.content)
+        HTTPoison.get()
 
         if Enum.count(aux) == 2 do
             Api.create_message(msg.channel_id, "OK")
@@ -31,5 +34,16 @@ defmodule Discbot.Consumer do
             Api.create_message(msg.channel_id, "Comando inválido. Use !ppt **pedra** | **papel** | **tesoura**")
         end
 
+    end
+
+    defp evaluate_forza(msg) do
+        imagem = getApiResponse("https://forza-api.tk")["image"]
+
+        Api.create_message(msg.channel_id, imagem)
+    end
+
+    defp getApiResponse(url) do
+        response = HTTPoison.get! url
+        JSON.decode!(response.body)
     end
 end
