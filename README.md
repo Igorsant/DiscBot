@@ -21,7 +21,7 @@ be found at [https://hexdocs.pm/discbot](https://hexdocs.pm/discbot).
 
 ## Running local environment
 
-use git bash to run this.
+use **only git bash** to run this.
 
 install the dependencies:
 
