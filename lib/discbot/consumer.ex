@@ -9,6 +9,14 @@ defmodule Discbot.Consumer do
 
     def handle_event({:MESSAGE_CREATE, msg, _ws_state}) do
         cond do
+            msg.content == "!ping" -> Api.create_message(msg.channel_id, "pong")
+            msg.content == "!pong" -> Api.create_message(msg.channel_id, "ping")
+            msg.content == "!react" -> Api.create_reaction!(msg.channel_id, msg.id, "😏")
+            String.starts_with?(msg.content, "!react with ") -> Api.create_reaction!(msg.channel_id, msg.id, Enum.at(String.split(msg.content, " "), 2))
+            
+            msg.content == "!ppt" -> Api.create_message(msg.channel_id, "Comando inválido. Use !ppt **pedra** | **papel** | **tesoura**")
+            String.starts_with?(msg.content, "!ppt ") -> evaluate_ppt(msg)
+
             msg.content == "!forza" -> evaluate_forza(msg)
             msg.content == "!funfact" -> evaluate_funfact(msg)
             msg.content == "!norris" -> evaluate_chuck_norris(msg)
@@ -18,6 +26,51 @@ defmodule Discbot.Consumer do
 
     def handle_event(_) do
         :ok
+    end
+
+    defp evaluate_ppt(msg) do
+        aux = String.split(msg.content)
+
+        if Enum.count(aux) == 2 do
+            case Enum.fetch!(aux, 1) do
+                "pedra" -> evaluate_stone(msg)
+                "papel" -> evaluate_paper(msg)
+                "tesoura" -> evaluate_scisor(msg)
+                _ -> Api.create_message(msg.channel_id, "Comando inválido. Use !ppt **pedra** | **papel** | **tesoura**")
+            end
+        else
+            Api.create_message(msg.channel_id, "Comando inválido. Use !ppt **pedra** | **papel** | **tesoura**")
+        end
+    end
+
+    defp evaluate_stone(msg) do
+        bot_element = Enum.random(0..2)
+
+        case bot_element do
+            0 -> Api.create_message(msg.channel_id, "O bot escolheu pedra. Houve um empate!")
+            1 -> Api.create_message(msg.channel_id, "O bot escolheu papel. O bot venceu!")
+            2 -> Api.create_message(msg.channel_id, "O bot escolheu tesoura. Você venceu!")
+        end
+    end
+
+    defp evaluate_paper(msg) do
+        bot_element = Enum.random(0..2)
+
+        case bot_element do
+            0 -> Api.create_message(msg.channel_id, "O bot escolheu pedra. Você venceu!")
+            1 -> Api.create_message(msg.channel_id, "O bot escolheu papel. Houve um empate!")
+            2 -> Api.create_message(msg.channel_id, "O bot escolheu tesoura. O bot venceu!")
+        end
+    end
+
+    defp evaluate_scisor(msg) do
+        bot_element = Enum.random(0..2)
+
+        case bot_element do
+            0 -> Api.create_message(msg.channel_id, "O bot escolheu pedra. O bot venceu!")
+            1 -> Api.create_message(msg.channel_id, "O bot escolheu papel. Você venceu!")
+            2 -> Api.create_message(msg.channel_id, "O bot escolheu tesoura. Houve um empate!")
+        end
     end
 
     defp evaluate_forza(msg) do
