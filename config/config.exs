@@ -1,4 +1,4 @@
 import Config
 
 config :nostrum,
-    token: System.get_env("token")
+    #token: System.get_env("token")
