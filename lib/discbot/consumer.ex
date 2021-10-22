@@ -14,6 +14,7 @@ defmodule Discbot.Consumer do
             msg.content == "!norris" -> evaluate_chuck_norris(msg)
             msg.content == "!checkGamePrice" -> Api.create_message(msg.channel_id, "Comando inválido. Insira um espaço após o comando e o nome de um jogo.")
             String.starts_with?(msg.content, "!checkGamePrice ") -> evaluate_game_price(msg)
+            msg.content == "!free" -> evaluate_free_game(msg)
             true -> :ok
         end
     end
@@ -25,6 +26,14 @@ defmodule Discbot.Consumer do
     defp get_api_response(url) do
         response = HTTPoison.get! url
         JSON.decode!(response.body)
+    end
+
+    defp evaluate_free_game(msg) do
+        rand = Enum.random(0..513)
+        res = Enum.fetch!(get_api_response("https://www.freetogame.com/api/games"), rand)
+
+
+        Api.create_message(msg.channel_id, "Título: #{res["title"]}\nDescrição: #{res["short_description"]}\nPlay --------> #{res["game_url"]}\n#{res["thumbnail"]}")
     end
 
     defp evaluate_forza(msg) do
