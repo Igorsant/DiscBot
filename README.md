@@ -45,15 +45,15 @@ and put the token. After that, just run ./runlocal.sh like this:
 
 !forza\
 Descrição: Esse comando faz com que o bot envie uma mensagem com um url de uma imagem aleatoria do jogo Forza.\
-Como usar: Enviar uma mensagem contendo somente o comando "!forza", qualquer outra mensagem será ignorada.
+Como usar: Enviar uma mensagem contendo somente o comando "!forza", qualquer outra mensagem será ignorada por esse comando.
 
 !funfact\
 Descrição: Esse comando envia uma mensagem com um fato divertido.\
-Como usar: Enviar uma mensagem contendo somente o comando "!funfact", qualquer outra mensagem será ignorada.
+Como usar: Enviar uma mensagem contendo somente o comando "!funfact", qualquer outra mensagem será ignorada por esse comando.
 
 !norris\
 Descrição: Envia uma mensagem com um piada aleatoria envolvendo Chuck Norris.\
-Como usar: Enviar uma mensagem contendo somente o comando "!norris", qualquer outra mensagem será ignorada.
+Como usar: Enviar uma mensagem contendo somente o comando "!norris", qualquer outra mensagem será ignorada por esse comando.
 
 !checkGamePrice\
 Descrição: Envia mensagens com no máximo 5 resultados contendo o nome, menor preço encontrado e uma imagem do jogo informado. Obs: o bot pode enviar informações sobre dlcs ou outras versões desse mesmo jogo ou franquia.\
