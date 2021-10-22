@@ -44,21 +44,21 @@ and put the token. After that, just run ./runlocal.sh like this:
 # Comandos dos Discord:
 
 !forza\
-Descrição: Esse comando faz com que o bot envie uma mensagem com um url de uma imagem aleatoria do jogo Forza.
+Descrição: Esse comando faz com que o bot envie uma mensagem com um url de uma imagem aleatoria do jogo Forza.\
 Como usar: Enviar uma mensagem contendo somente o comando "!forza", qualquer outra mensagem será ignorada.
 
 !funfact\
-Descrição: Esse comando envia uma mensagem com um fato divertido.
+Descrição: Esse comando envia uma mensagem com um fato divertido.\
 Como usar: Enviar uma mensagem contendo somente o comando "!funfact", qualquer outra mensagem será ignorada.
 
 !norris\
-Descrição: Envia uma mensagem com um piada aleatoria envolvendo Chuck Norris.
+Descrição: Envia uma mensagem com um piada aleatoria envolvendo Chuck Norris.\
 Como usar: Enviar uma mensagem contendo somente o comando "!norris", qualquer outra mensagem será ignorada.
 
 !checkGamePrice\
-Descrição: Envia mensagens com no máximo 5 resultados contendo o nome, menor preço encontrado e uma imagem do jogo informado. Obs: o bot pode enviar informações sobre dlcs ou outras versões desse mesmo jogo ou franquia.
+Descrição: Envia mensagens com no máximo 5 resultados contendo o nome, menor preço encontrado e uma imagem do jogo informado. Obs: o bot pode enviar informações sobre dlcs ou outras versões desse mesmo jogo ou franquia.\
 Como usar: Enviar uma mensagem contendo o comando "!checkGamePrice", seguido de um espaço e o nome de um jogo. Caso não haja um espaço e o nome de um jogo após o comando, o mesmo será ignorado. Caso nenhum jogo for encontrado, o bot informará.
 
 !free\
-Descrição: Envia um jogo aleatório grátis com seu título, descrição, link para jogar e thumbnail.
+Descrição: Envia um jogo aleatório grátis com seu título, descrição, link para jogar e thumbnail.\
 Como usar: Envie uma mensagem exatamente assim "!free".
