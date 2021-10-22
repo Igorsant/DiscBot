@@ -1,4 +1,4 @@
-# Igor Oliveira e Álbero ìtalo
+# Igor Oliveira e Álbero Ítalo
 
 # DiscBot
 
