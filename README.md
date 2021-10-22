@@ -1,6 +1,6 @@
-# Discbot
+# Igor Oliveira e Álbero ìtalo
 
-**TODO: Add description**
+# DiscBot
 
 ## Installation
 
