@@ -41,7 +41,7 @@ and put the token. After that, just run ./runlocal.sh like this:
 ./runLocal.sh
 ```
 
-# Comandos dos Discord:
+# Comandos dos Bots no Discord:
 
 !forza\
 Descrição: Esse comando faz com que o bot envie uma mensagem com um url de uma imagem aleatoria do jogo Forza.\
